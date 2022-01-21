@@ -12,21 +12,22 @@ var tileWidth = 50;
 
 var tile;
 
-var boardColor = '#97bec4';
+var boardColor = 'white';
+
+var board;
+
+const numLetters = 5
 
 
 function setup() {
   let canvas;
-
-  if (windowWidth < windowHeight) {
-    canvas = createCanvas(windowWidth, windowHeight);
-  } else {
-    canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38);
-  }
+  canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38);
 
   canvas.parent("game");
 
   background(boardColor);
+
+  board = new Board(0, 10, width, numLetters);
 
   // inputLetter = createInput();
   // inputLetter.position(0, 0);
@@ -44,7 +45,7 @@ function setup() {
   // btnVvod.mousePressed(onPressedVvod);
   // btnVvod.parent("game");
 
-  tile = new Tile(100, 100, tileWidth, 0, 0)
+  tile = new Tile(100, 100, tileWidth, 0, 0);
 
 }
 
@@ -57,21 +58,10 @@ function setup() {
 //   isHidden = !isHidden;
 // }
 
-function windowResized() {
-  // keep a 16:9 portrait format
-  if (windowWidth < windowHeight) {
-    resizeCanvas(windowWidth, windowHeight);
-  } else {
-    resizeCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38);
-  }
-
-  console.log(windowWidth)
-  console.log(windowHeight)
-}
 
 function draw() {
-  // background(255);
-  tile.render()
+  background(boardColor);
+  board.render()
 }
 
 // function onInputLetterPressed() {

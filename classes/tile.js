@@ -5,8 +5,8 @@ var State = {
     },
     statessDict = {
         [State.INACTIVE]: {
-            color: '#b0e0e6',
-            strokeWeight: 4
+            color: '#bcbcbc',
+            strokeWeight: 2
         },
         [State.SELECTED]: {
             color: '#f68c20',
@@ -49,7 +49,7 @@ class Tile {
         this.letter = '';
 
         // inner color - this is to show that it belongs to a word
-        this.innerColor = '#97bec4';
+        this.innerColor = 'white';
     }
 
     clicked() {
@@ -63,6 +63,6 @@ class Tile {
         fill(this.innerColor);
         stroke(statessDict[this.state]['color']);
         strokeWeight(statessDict[this.state]['strokeWeight']);
-        rect(this.x - this.width / 2, this.y - this.width / 2, this.x + this.width / 2, this.y + this.width / 2);
+        rect(this.x - this.width / 2, this.y - this.width / 2, this.width, this.width);
     }
 }

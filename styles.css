@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    /* background-color: #74867c; */
 }
 
 #container {
@@ -11,10 +12,10 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
-    /* background-color: red; */
+    /* background-color: #74867c; */
 }
 
 #game {
     position: relative;
-    /* background-color: green; */
+    /* background-color: #74867c; */
 }
