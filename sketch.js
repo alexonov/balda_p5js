@@ -21,7 +21,9 @@ const numLetters = 5
 
 function setup() {
   let canvas;
-  canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38);
+  pixelDensity(1);
+  // canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38);
+  canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38)
 
   canvas.parent("game");
 

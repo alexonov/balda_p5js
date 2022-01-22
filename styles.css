@@ -1,7 +1,11 @@
 body {
     margin: 0;
-    /* background-color: #74867c; */
+    background-color: #74867c;
 }
+
+html, body {
+    overscroll-behavior: none;
+  }
 
 #container {
     min-height: 100vh;
@@ -12,10 +16,10 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
-    /* background-color: #74867c; */
+    background-color: #74867c;
 }
 
 #game {
     position: relative;
-    /* background-color: #74867c; */
+    background-color: #74867c;
 }
