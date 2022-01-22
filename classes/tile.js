@@ -93,6 +93,18 @@ class Tile {
         return this.letter === '';
     }
 
+    isSelected() {
+        return this.state === State.SELECTED;
+    }
+
+    isEdited() {
+        return this.state === State.EDITED;
+    }
+
+    isInactive() {
+        return this.state === State.INACTIVE;
+    }
+
     getLetter() {
         return this.letter;
     }

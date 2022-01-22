@@ -1,27 +1,18 @@
-var inputLetter;
-var btnVvod;
-var inputState;
-var btnInputState;
-var btnCopyState;
+// var input;
+// var button;
 
-var clickCounter = 0;
-var isHidden = false;
+var scene;
 
-var tiles = [];
-var tileWidth = 50;
+var vocab;
 
-var tile;
+const boardColor = 'white';
 
-var boardColor = 'white';
-
-var board;
-
-const numLetters = 5
-
+function preload() {
+  vocab = loadStrings('assets/vocab.txt');
+}
 
 function setup() {
   let canvas;
-  pixelDensity(1);
   // canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38);
   canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38)
 
@@ -29,8 +20,33 @@ function setup() {
 
   background(boardColor);
 
-  board = new Board(0, 10, width, numLetters);
-  board.setStartingWord('балда')
+  scene = new Scene(width, 'балда', vocab);
+
+  // create inputer
+  let inputer = createInput('Б');
+  inputer.attribute('id', 'inputer');
+  inputer.parent('game');
+  inputer.size(scene.board.tileWidth);
+  inputer.style('font-size', `${scene.board.tileWidth*0.8}px`,
+    'color', '#00264c',
+    'text-align', 'right',
+  );
+  // inputer.position(0, 0);
+  inputer.hide();
+
+
+  // setting callbacks
+  inputer.input(onInputerInput);
+  inputer.changed(onInputerChanged);
+  inputer.mouseClicked(onInputerClicked);
+
+  scene.setInputer(inputer);
+
+  // input = createInput();
+  // input.position(0,0);
+  // button = createButton('check');
+  // button.position(0,20);
+  // button.mousePressed(btnCheck);
 
   // inputLetter = createInput();
   // inputLetter.position(0, 0);
@@ -50,8 +66,40 @@ function setup() {
 
 }
 
+function onInputerInput() {
+  let value = scene.inputer.value();
+  let newValue;
+  let oldValue = '';
+  if (value.length > 1) {
+    newValue = value[1];
+    oldValue = value[0];
+  } else {
+    newValue = value;
+  }
+  // if russian letter - keep it
+  if (/[а-яА-Я]/.test(newValue)) {
+    scene.inputer.value(newValue.toUpperCase());
+  } else {
+    scene.inputer.value(oldValue.toUpperCase());
+  }
+}
+
+function onInputerChanged() {
+  console.log(scene.inputer.value());
+  scene.inputer.elt.blur();
+  scene.processInputer();
+}
+
+function onInputerClicked() {
+  scene.inputer.elt.setSelectionRange(0, scene.inputer.value().length);
+}
+
 function mouseClicked() {
-  board.clicked();
+  scene.clicked();
+}
+
+function btnCheck() {
+  console.log(scene.checkWord(input.value()));
 }
 
 
@@ -67,7 +115,13 @@ function mouseClicked() {
 
 function draw() {
   background(boardColor);
-  board.render()
+  scene.render()
+}
+
+function touchMoved() {
+  // otherwise the display will move around
+  // with your touch :(
+  return false;
 }
 
 // function onInputLetterPressed() {
@@ -80,11 +134,6 @@ function draw() {
 //       inputLetter.removeAttribute('readOnly');
 //     }
 //   }
-// }
-
-// function onInputLetterChanged() {
-//   inputLetter.attribute('readOnly', 'true');
-//   clickCounter = 0;
 // }
 
 // function onInputLetter() {

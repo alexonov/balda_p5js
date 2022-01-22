@@ -11,7 +11,7 @@ class Board {
         this.width = width;
         this.numLetters = numLetters;
 
-        let margin = 8;
+        let margin = 4;
 
         let tileWidth = Math.floor((width - margin) / numLetters) - margin;
 
@@ -21,13 +21,15 @@ class Board {
             let j = index % numLetters;
             let i = Math.floor(index / numLetters);
 
-            let tileY = this.x + (i + 1) * (margin + tileWidth) - Math.floor(tileWidth / 2);
-            let tileX = this.y + (j + 1) * (margin + tileWidth) - Math.floor(tileWidth / 2);
+            let tileX = this.x + (j + 1) * (margin + tileWidth) - Math.floor(tileWidth / 2);
+            let tileY = this.y + (i + 1) * (margin + tileWidth) - Math.floor(tileWidth / 2);
 
             this.tiles.push(new Tile(tileX, tileY, tileWidth, i, j));
         }
 
-        this
+        this.tileWidth = tileWidth;
+
+        this.editedTile = null;
     }
 
     getTile(i, j) {
@@ -45,7 +47,7 @@ class Board {
             // center i
             let centerI = Math.floor(this.numLetters / 2);
             for (var j = 0; j < word.length; j++) {
-                tile = this.getTile(centerI, j);
+                let tile = this.getTile(centerI, j);
                 tile.setLetter(word[j]);
                 tile.markEditable(false);
             }
@@ -58,19 +60,37 @@ class Board {
         });
     }
 
+    setAllInactive() {
+        this.tiles.forEach(t => {
+            t.setInactiveState();
+        });
+        this.editedTile = null;
+    }
+
     clicked() {
         if (mouseX > this.x &
             mouseX < this.x + this.width &
             mouseY > this.y &
             mouseY < this.y + this.width) {
 
-            this.tiles.forEach(tile => {
+            for (const tile of this.tiles) {
+        
                 if (tile.isClicked()) {
 
                     console.log(`clicked ${tile.i}, ${tile.j}`);
 
+                    // if clicked tile is beinng edited - do nothing
+                    if (tile.isEdited()) {
+                        break;
+                    }
+
+                    // if some other tile is edited - stop editing and set all inactive
+                    else if (this.editedTile != null) {
+                        this.setAllInactive();
+                    }
+
                     // if the tile is empty: we want to put letter there
-                    if (tile.isEmpty()) {
+                    else if (tile.isEmpty()) {
                         this.tiles.forEach(t => {
                             // 1. set all other tiles to inactive
                             t.setInactiveState();
@@ -82,14 +102,31 @@ class Board {
                         });
                         // 3. set selected tile as edited
                         tile.setEditedState();
+                        this.editedTile = tile;
 
                     }
-                    else {
+
+                    // if tile is not empty but editable
+                    // we may either select it as part of word
+                    // or edit the letter
+                    else if (tile.isEditable) {
+                        // if already selected - second click starts editing
+                        if (tile.isSelected()) {
+                            tile.setEditedState();
+                            this.editedTile = tile;
+                            tile.letter = '';
+                        } else {
+                            // if not selected - select to be part of word
+                            tile.setSelectedState();
+                        }
+                    } else {
                         tile.setSelectedState();
                     }
 
+                    break;
+
                 }
-            });
+            }
         }
     }
 }

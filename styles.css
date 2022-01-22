@@ -23,3 +23,17 @@ html, body {
     position: relative;
     background-color: #74867c;
 }
+
+#inputer {
+    background-color:rgba(0, 0, 0, 0);
+    /* color:white; */
+    border: none;
+    outline:none;
+    /* height:30px; */
+    transition:height 1s;
+    -webkit-transition:height 1s;
+}
+/* #inputer:focus {
+    height:50px;
+    font-size:16px;
+} */
