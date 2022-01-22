@@ -21,10 +21,10 @@ class Board {
             let j = index % numLetters;
             let i = Math.floor(index / numLetters);
 
-            let tileX = this.x + (i + 1) * (margin + tileWidth) - Math.floor(tileWidth / 2);
-            let tileY = this.y + (j + 1) * (margin + tileWidth) - Math.floor(tileWidth / 2);
+            let tileY = this.x + (i + 1) * (margin + tileWidth) - Math.floor(tileWidth / 2);
+            let tileX = this.y + (j + 1) * (margin + tileWidth) - Math.floor(tileWidth / 2);
 
-            this.tiles.push(new Tile(tileX, tileY, tileWidth, j, i));
+            this.tiles.push(new Tile(tileX, tileY, tileWidth, i, j));
         }
 
         this
@@ -43,7 +43,7 @@ class Board {
     setStartingWord(word) {
         if (word.length == this.numLetters) {
             // center i
-            let centerI = Math.floor(this.numLetters / 2) + 1;
+            let centerI = Math.floor(this.numLetters / 2);
             for (var j = 0; j < word.length; j++) {
                 tile = this.getTile(centerI, j);
                 tile.setLetter(word[j]);
@@ -83,6 +83,9 @@ class Board {
                         // 3. set selected tile as edited
                         tile.setEditedState();
 
+                    }
+                    else {
+                        tile.setSelectedState();
                     }
 
                 }

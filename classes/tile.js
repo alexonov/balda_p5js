@@ -5,15 +5,15 @@ var State = {
     },
     statessDict = {
         [State.INACTIVE]: {
-            color: '#bcbcbc',
+            color: '#b5c3d1',
             strokeWeight: 2
         },
         [State.SELECTED]: {
-            color: '#f68c20',
+            color: '#5d86a0',
             strokeWeight: 4
         },
         [State.EDITED]: {
-            color: '#f68c20',
+            color: '#00264c',
             strokeWeight: 2
         },
     };
@@ -71,6 +71,9 @@ class Tile {
         stroke(statessDict[this.state]['color']);
         strokeWeight(statessDict[this.state]['strokeWeight']);
         rect(this.x - this.width / 2, this.y - this.width / 2, this.width, this.width);
+        textSize(this.width * 0.8);
+        fill(statessDict[this.state]['color']);
+        textAlign(CENTER, CENTER);
         text(this.letter, this.x, this.y);
     }
 
@@ -96,7 +99,7 @@ class Tile {
 
     setLetter(letter) {
         if (letter.length == 1) {
-            this.letter = letter
+            this.letter = letter.toUpperCase()
         }
     }
 
