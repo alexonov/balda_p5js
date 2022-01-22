@@ -28,6 +28,7 @@ function setup() {
   background(boardColor);
 
   board = new Board(0, 10, width, numLetters);
+  board.setStartingWord('балда')
 
   // inputLetter = createInput();
   // inputLetter.position(0, 0);
@@ -45,9 +46,12 @@ function setup() {
   // btnVvod.mousePressed(onPressedVvod);
   // btnVvod.parent("game");
 
-  tile = new Tile(100, 100, tileWidth, 0, 0);
-
 }
+
+function mouseClicked() {
+  board.clicked();
+}
+
 
 // function onPressedVvod() {
 //   if (isHidden) {

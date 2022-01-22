@@ -30,14 +30,14 @@ function randColor() {
 
 
 class Tile {
-    constructor(x, y, width, ind_x, ind_y) {
+    constructor(x, y, width, i, j, letter = '', isEditable = true) {
         // center points
         this.x = x;
         this.y = y;
 
         // indexes on the board
-        this.ind_x = ind_x;
-        this.ind_y = ind_y;
+        this.i = i;
+        this.j = j;
 
         // size
         this.width = width;
@@ -46,17 +46,24 @@ class Tile {
         this.state = State.INACTIVE;
 
         // letter
-        this.letter = '';
+        this.letter = letter;
+
+        // if tile can be edited
+        this.isEditable = isEditable;
 
         // inner color - this is to show that it belongs to a word
         this.innerColor = 'white';
     }
 
-    clicked() {
-        let d = dist(mouseX, mouseY, this.x, this.y);
-        if (d < this.diameter / 2) {
-            this.color = color(255, 0, 200)
+    isClicked() {
+        if (dist(mouseX, 0, this.x, 0) < this.width / 2 &
+            dist(0, mouseY, 0, this.y) < this.width / 2) {
+
+            return true;
+        } else {
+            return false;
         }
+
     }
 
     render() {
@@ -64,5 +71,40 @@ class Tile {
         stroke(statessDict[this.state]['color']);
         strokeWeight(statessDict[this.state]['strokeWeight']);
         rect(this.x - this.width / 2, this.y - this.width / 2, this.width, this.width);
+        text(this.letter, this.x, this.y);
+    }
+
+    setInactiveState() {
+        this.state = State.INACTIVE;
+    }
+
+    setSelectedState() {
+        this.state = State.SELECTED;
+    }
+
+    setEditedState() {
+        this.state = State.EDITED;
+    }
+
+    isEmpty() {
+        return this.letter === '';
+    }
+
+    getLetter() {
+        return this.letter;
+    }
+
+    setLetter(letter) {
+        if (letter.length == 1) {
+            this.letter = letter
+        }
+    }
+
+    eraseLetter() {
+        this.letter = '';
+    }
+
+    markEditable(state) {
+        this.isEditable = state
     }
 }
