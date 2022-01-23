@@ -8,7 +8,7 @@ var vocab;
 const boardColor = 'white';
 
 function preload() {
-  vocab = loadStrings('assets/vocab.txt');
+  vocab = loadStrings('https://alexonov.github.io/balda/assets/vocab.txt');
 }
 
 function setup() {
@@ -77,17 +77,19 @@ function onInputerInput() {
     newValue = value;
   }
   // if russian letter - keep it
-  if (/[а-яА-Я]/.test(newValue)) {
+  if (/[а-яА-ЯЁё]/.test(newValue)) {
     scene.inputer.value(newValue.toUpperCase());
   } else {
     scene.inputer.value(oldValue.toUpperCase());
   }
+
+  scene.readInputer();
 }
 
 function onInputerChanged() {
   console.log(scene.inputer.value());
   scene.inputer.elt.blur();
-  scene.processInputer();
+  scene.quitInputer();
 }
 
 function onInputerClicked() {
@@ -121,7 +123,7 @@ function draw() {
 function touchMoved() {
   // otherwise the display will move around
   // with your touch :(
-  return false;
+  // return false;
 }
 
 // function onInputLetterPressed() {

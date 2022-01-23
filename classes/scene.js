@@ -49,9 +49,13 @@ class Scene {
         }
     }
 
-    processInputer() {
+    quitInputer() {
         this.board.editedTile.letter = this.inputer.value();
         this.inputer.hide();
         this.board.setAllInactive();
+    }
+
+    readInputer() {
+        this.board.editedTile.letter = this.inputer.value();
     }
 }

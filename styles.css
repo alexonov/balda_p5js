@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background-color: #74867c;
+    /* background-color: #74867c; */
 }
 
 html, body {
@@ -16,17 +16,17 @@ html, body {
     align-items: center;
     justify-content: center;
     position: relative;
-    background-color: #74867c;
+    /* background-color: #74867c; */
 }
 
 #game {
     position: relative;
-    background-color: #74867c;
+    /* background-color: #74867c; */
 }
 
 #inputer {
     background-color:rgba(0, 0, 0, 0);
-    /* color:white; */
+    color:rgba(0, 0, 0, 0);
     border: none;
     outline:none;
     /* height:30px; */
