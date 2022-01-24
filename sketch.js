@@ -11,26 +11,30 @@ function preload() {
   vocab = loadStrings('https://alexonov.github.io/balda/assets/vocab.txt');
 }
 
-function setup() {
-  let canvas;
-  // canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38);
-  canvas = createCanvas((windowHeight / 1.3) * 0.5625, windowHeight / 1.38)
+function windowResized() {
+  // redraw board in the center
+}
 
-  canvas.parent("game");
+function setup() {
+
+  let canvas;
+  canvas = createCanvas(windowWidth, windowHeight);
+
+  // canvas.parent("game");
 
   background(boardColor);
 
   scene = new Scene(width, 'балда', vocab);
 
   // create inputer
-  let inputer = createInput('Б');
+  let inputer = createInput();
   inputer.attribute('id', 'inputer');
-  inputer.parent('game');
-  inputer.size(scene.board.tileWidth);
-  inputer.style('font-size', `${scene.board.tileWidth*0.8}px`,
-    'color', '#00264c',
-    'text-align', 'right',
-  );
+  // inputer.parent('game');
+  // inputer.size(scene.board.tileWidth);
+  // inputer.style('font-size', `${scene.board.tileWidth*0.8}px`,
+  //   'color', '#00264c',
+  //   'text-align', 'right',
+  // );
   // inputer.position(0, 0);
   inputer.hide();
 
@@ -120,12 +124,6 @@ function draw() {
   scene.render()
 }
 
-function touchMoved() {
-  // otherwise the display will move around
-  // with your touch :(
-  // return false;
-}
-
 // function onInputLetterPressed() {
 //   console.log(clickCounter)
 //   console.log(inputLetter.attribute('readOnly'))
@@ -138,23 +136,25 @@ function touchMoved() {
 //   }
 // }
 
-// function onInputLetter() {
-//   let value = inputLetter.value();
-//   let newValue;
-//   let oldValue = '';
-//   if (value.length > 1) {
-//     newValue = value[1];
-//     oldValue = value[0];
-//   } else {
-//     newValue = value;
-//   }
+let down;
+let timeTaken
 
-//   // if russian letter - keep it
-//   if (/[а-яА-ЯЁё]/.test(newValue)) {
-//     inputLetter.value(newValue.toUpperCase());
-//   } else {
-//     inputLetter.value(oldValue.toUpperCase());
-//   }
+function mousePressed() {
+  down = Date.now();
+}
 
-//   console.log(inputLetter.value())
-// }
+function mouseReleased() {
+  timeTaken = Date.now() - down;
+}
+
+function touchStarted(){
+  return false;
+}
+
+function touchMoved(){
+  return false;
+}
+
+function touchEnded(){
+  return false;
+}

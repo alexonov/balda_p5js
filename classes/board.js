@@ -30,6 +30,7 @@ class Board {
         this.tileWidth = tileWidth;
 
         this.editedTile = null;
+        this.selectedTiles = [];
     }
 
     getTile(i, j) {
@@ -65,6 +66,7 @@ class Board {
             t.setInactiveState();
         });
         this.editedTile = null;
+        this.selectedTiles = [];
     }
 
     clicked() {
@@ -78,9 +80,11 @@ class Board {
                 if (tile.isClicked()) {
 
                     console.log(`clicked ${tile.i}, ${tile.j}`);
+                    console.log(this.editedTile);
 
                     // if clicked tile is beinng edited - do nothing
                     if (tile.isEdited()) {
+                        console.log('break');
                         break;
                     }
 
@@ -104,6 +108,9 @@ class Board {
                         tile.setEditedState();
                         this.editedTile = tile;
 
+                        // 4. reset selected word
+                        this.selectedTiles = [];
+
                     }
 
                     // if tile is not empty but editable
@@ -118,11 +125,19 @@ class Board {
                         } else {
                             // if not selected - select to be part of word
                             tile.setSelectedState();
+                            if (!this.selectedTiles.includes(tile)) {
+                                this.selectedTiles.push(tile);
+                            }
                         }
                     } else {
+                        // TODO: add logic to only allow valid selection
+                        // that can be trated as a word (no crossing, no diagonal)
                         tile.setSelectedState();
+                        if (!this.selectedTiles.includes(tile)) {
+                            this.selectedTiles.push(tile);
+                        }
                     }
-
+                    console.log(this.editedTile);
                     break;
 
                 }

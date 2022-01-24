@@ -70,7 +70,8 @@ class Tile {
         fill(this.innerColor);
         stroke(statessDict[this.state]['color']);
         strokeWeight(statessDict[this.state]['strokeWeight']);
-        rect(this.x - this.width / 2, this.y - this.width / 2, this.width, this.width);
+        rectMode(CENTER);
+        rect(this.x, this.y, this.width, this.width);
         textSize(this.width * 0.8);
         fill(statessDict[this.state]['color']);
         textAlign(CENTER, CENTER);

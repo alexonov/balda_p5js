@@ -16,7 +16,7 @@ html, body {
     align-items: center;
     justify-content: center;
     position: relative;
-    /* background-color: #74867c; */
+    background-color: #74867c;
 }
 
 #game {
