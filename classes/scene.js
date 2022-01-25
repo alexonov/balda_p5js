@@ -32,25 +32,34 @@ class Scene {
         this.vocab = vocab;
 
         this.words = [];
-
-        this.selectedWord = {
-            word: '',
-            coords: {
-                x: 0,
-                y: 0,
-                width: 0,
-                height: 0
-            },
-            state: wordState.INCORRECT
-        };
     }
 
     setInputer(inputer) {
         this.inputer = inputer;
     }
 
-    checkWord(word) {
-        return this.vocab.includes(word.toLowerCase()) ? wordState.CORRECT : wordState.INCORRECT;
+    getSelectedWord() {
+        return this.board.selectedTiles.map(a => a.letter).join('');
+    }
+
+    isCurrentCurrentWordOK() {
+        let word = this.getSelectedWord();
+        let isInVocab = this.vocab.includes(word.toLowerCase());
+        let notAlreadyPlayed = !this.words.includes(word);
+        let hasNewLetter = this.board.selectedTiles.some((t) => t.isSelected());
+        return isInVocab & notAlreadyPlayed & hasNewLetter
+    }
+
+    wordRectCoordinates(word) {
+        let width = textWidth(word)
+        let margin = 20
+
+        return {
+            x: this.centerPointX - width / 2 - margin,
+            y: this.board.width + headerHeight,
+            width: width + margin * 2,
+            height: this.board.tileWidth
+        }
     }
 
     render() {
@@ -68,23 +77,25 @@ class Scene {
 
         // display selected word
         if (this.board.selectedTiles.length != 0) {
-            let word = this.board.selectedTiles.map(a => a.letter).join('');
-            let wordState = this.checkWord(word);
+
+            let word = this.getSelectedWord();
+            let state = this.isCurrentCurrentWordOK() ? wordState.CORRECT : wordState.INCORRECT;
+
+            let coords = this.wordRectCoordinates(word);
 
             rectMode(CORNER);
-            let width = textWidth(word)
-            stroke(wordStateStyle[wordState].backColor);
-            fill(wordStateStyle[wordState].backColor);
-            let margin = 20
-            let wordRect = rect(this.centerPointX - width / 2 - margin, this.board.width + headerHeight, width + margin * 2, this.board.tileWidth, 20);
-            console.log(wordRect);
+            stroke(wordStateStyle[state].backColor);
+            fill(wordStateStyle[state].backColor);
+
+            rect(coords.x, coords.y, coords.width, coords.height, 20);
 
             textAlign(CENTER, CENTER);
             rectMode(CENTER);
-            stroke(wordStateStyle[wordState].strokeColor);
-            fill(wordStateStyle[wordState].strokeColor);
-            // text(word, this.board.x, this.board.width + headerHeight, this.board.width, this.board.tileWidth);
-            text(word, this.centerPointX, this.board.width + headerHeight + this.board.tileWidth / 2);
+            stroke(wordStateStyle[state].strokeColor);
+            fill(wordStateStyle[state].strokeColor);
+            text(word,
+                this.centerPointX,
+                this.board.width + headerHeight + this.board.tileWidth / 2);
 
         }
     }
@@ -107,7 +118,24 @@ class Scene {
             this.inputer.hide();
         }
 
-        // check if the word was clicked
+        // check if the word was clicked only if word is OK
+
+        if (this.isCurrentCurrentWordOK()) {
+            let word = this.getSelectedWord();
+            let coords = this.wordRectCoordinates(word)
+            if (mouseX > coords.x &
+                mouseX < coords.x + coords.width &
+                mouseY > coords.y &
+                mouseY < coords.y + coords.height) {
+
+                this.words.push(word);
+                this.board.saveSelectedLetter();
+                this.board.resetToSavedState();
+
+                console.log(this.words);
+            }
+
+        }
 
     }
 

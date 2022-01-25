@@ -123,4 +123,12 @@ class Tile {
     markEditable(state) {
         this.isEditable = state
     }
+
+    hasSavedLetter() {
+        return !this.isEditable & this.letter !== '';
+    }
+
+    hasLetter() {
+        return this.letter !== '';
+    }
 }

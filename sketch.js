@@ -147,14 +147,14 @@ function mouseReleased() {
   timeTaken = Date.now() - down;
 }
 
-function touchStarted(){
-  return false;
-}
+// function touchStarted(){
+//   return false;
+// }
 
-function touchMoved(){
-  return false;
-}
+// function touchMoved(){
+//   return false;
+// }
 
-function touchEnded(){
-  return false;
-}
+// function touchEnded(){
+//   return false;
+// }
