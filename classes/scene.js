@@ -16,6 +16,9 @@ var wordState = {
         }
     }
 
+let buttonColor = '#b5c3d1';
+let scoreColor = '#5d86a0';
+
 class Scene {
     constructor(width, startingWord, vocab) {
         // calculate center point and board width
@@ -32,6 +35,72 @@ class Scene {
         this.vocab = vocab;
 
         this.words = [];
+
+        this.score = startingWord.length - startingWord.length ** 2;
+
+        this.headerButtons = [{
+                name: 'restart',
+                button: new HeaderButton(x + headerHeight * 0.2, 0, headerHeight, '⎙', buttonColor, buttonColor),
+            },
+            {
+                name: 'paste',
+                button: new HeaderButton(x + headerHeight * 1.2, 0, headerHeight, '⎀', buttonColor, buttonColor),
+            },
+            {
+                name: 'copy',
+                button: new HeaderButton(x + this.board.width - headerHeight, 0, headerHeight, '⎘', buttonColor, buttonColor),
+            },
+            {
+                name: 'score',
+                button: new HeaderButton(x + this.board.width / 2, headerHeight * 0.8 / 2, headerHeight * 0.5, this.score, buttonColor, 'white', RIGHT),
+            },
+
+
+        ]
+
+        this.isScoreVisible = false;
+
+    }
+
+    headerCallback(buttonName) {
+        switch (buttonName) {
+            case 'restart':
+                this.restart();
+                break;
+            case 'score':
+                this.isScoreVisible = true;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    restart() {
+        console.log('restarting...')
+        let newWord = '';
+        do {
+            newWord = this.vocab[Math.floor(Math.random() * this.vocab.length)];
+        } while (newWord.length != this.board.numLetters);
+
+        this.board.setStartingWord(newWord);
+    }
+
+    showScore() {
+
+        let cardWidth = this.board.width - this.board.tileWidth;
+
+        rectMode(CORNER);
+        stroke(scoreColor);
+        fill(255,255,255, 150);
+        rect(this.board.tiles[0].x, this.board.tiles[0].y, cardWidth, this.board.width);
+
+        fill(scoreColor);
+        stroke('white');
+        textSize(this.board.tileWidth * 0.20);
+        let words = this.words.map(w => w + ` (${w.length - 2})`).join('\n');
+        textAlign(CENTER, TOP);
+        text(words, this.board.tiles[0].x, this.board.tiles[0].y, cardWidth, this.board.width);
     }
 
     setInputer(inputer) {
@@ -63,11 +132,20 @@ class Scene {
     }
 
     render() {
+
         // header
-        // textSize(this.board.tileWidth);
+        // textSize(60);
+        // textStyle(NORMAL);
+        // stroke('white');
         // fill('#5d86a0');
         // textAlign(CENTER, BOTTOM);
-        // text('бʌлда́', this.board.x + this.board.width / 2, this.board.tileWidth);
+        // text('⎘ ⎀ ↺', this.board.x + this.board.width / 2, this.board.tileWidth / 2);
+        this.headerButtons.forEach((e) => {
+            if (e.name === 'score') {
+                e.button.setText('Счёт: ' + this.score);
+            }
+            e.button.render();
+        });
 
         strokeWeight(0.5);
         stroke('#5d86a0');
@@ -98,9 +176,20 @@ class Scene {
                 this.board.width + headerHeight + this.board.tileWidth / 2);
 
         }
+
+        // show score
+        if (this.isScoreVisible) {
+            this.showScore();
+        }
     }
 
     clicked() {
+        // if showing score - hide and do nothing
+        if (this.isScoreVisible) {
+            this.isScoreVisible = false;
+            return;
+        }
+
         this.board.clicked();
 
         // show inputer
@@ -129,13 +218,25 @@ class Scene {
                 mouseY < coords.y + coords.height) {
 
                 this.words.push(word);
+                this.score += word.length - 2;
                 this.board.saveSelectedLetter();
                 this.board.resetToSavedState();
 
                 console.log(this.words);
+
+                if (this.board.isFull()) {
+                    this.board.animate();
+                }
             }
 
         }
+
+        this.headerButtons.forEach((button) => {
+            if (button.button.isClicked()) {
+                console.log(`${button.name} is clicked!`);
+                this.headerCallback(button.name);
+            }
+        })
 
     }
 

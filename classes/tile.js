@@ -1,7 +1,8 @@
 var State = {
         INACTIVE: 0,
         SELECTED: 1,
-        EDITED: 2
+        EDITED: 2,
+        ANIMATED: 3
     },
     statessDict = {
         [State.INACTIVE]: {
@@ -14,6 +15,10 @@ var State = {
         },
         [State.EDITED]: {
             color: '#00264c',
+            strokeWeight: 2
+        },
+        [State.ANIMATED]: {
+            color: '#b5c3d1',
             strokeWeight: 2
         },
     };
@@ -53,6 +58,31 @@ class Tile {
 
         // inner color - this is to show that it belongs to a word
         this.innerColor = 'white';
+
+        this.animationCounter = 0;
+        this.animationAdder = 3;
+        this.animationColor = 'white';
+
+        this.startColor = {
+            red: Math.floor(Math.random() * 200) + 50,
+            green: Math.floor(Math.random() * 200) + 50,
+            blue: Math.floor(Math.random() * 200) + 50,
+        }
+    }
+
+    animate() {
+        this.animationCounter += this.animationAdder;
+
+        let red = this.startColor.red + this.animationCounter;
+        let green = this.startColor.green + this.animationCounter;
+        let blue = this.startColor.blue + this.animationCounter;
+        this.animationColor = color(red, green, blue);
+
+        if (Math.min(red, green, blue) > 200) {
+            this.animationAdder *= -1;
+        } else if (this.animationCounter < 0) {
+            this.animationAdder *= -1;
+        }
     }
 
     isClicked() {
@@ -68,13 +98,27 @@ class Tile {
 
     render() {
         fill(this.innerColor);
-        stroke(statessDict[this.state]['color']);
+
+        let strokeColor = 'white';
+        let fillColor = 'white';
+
+        if (this.isAnimated()) {
+            this.animate();
+            strokeColor = this.animationColor;
+            fillColor = this.animationColor;
+        } else {
+            strokeColor = statessDict[this.state]['color'];
+            fillColor = statessDict[this.state]['color'];
+        }
+
+        stroke(strokeColor);
         strokeWeight(statessDict[this.state]['strokeWeight']);
         rectMode(CENTER);
         rect(this.x, this.y, this.width, this.width);
         textSize(this.width * 0.8);
-        fill(statessDict[this.state]['color']);
+        fill(fillColor);
         textAlign(CENTER, CENTER);
+        textFont('Helvetica');
         text(this.letter, this.x, this.y);
     }
 
@@ -88,6 +132,10 @@ class Tile {
 
     setEditedState() {
         this.state = State.EDITED;
+    }
+
+    setAnimatedState() {
+        this.state = State.ANIMATED;
     }
 
     isEmpty() {
@@ -104,6 +152,10 @@ class Tile {
 
     isInactive() {
         return this.state === State.INACTIVE;
+    }
+
+    isAnimated() {
+        return this.state === State.ANIMATED;
     }
 
     getLetter() {

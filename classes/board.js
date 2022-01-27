@@ -31,6 +31,8 @@ class Board {
 
         this.editedTile = null;
         this.selectedTiles = [];
+
+        this._debugMessage = '';
     }
 
     getTile(i, j) {
@@ -44,6 +46,11 @@ class Board {
     }
 
     setStartingWord(word) {
+        this.tiles.forEach((t) => {
+            t.eraseLetter();
+            t.markEditable(true);
+            t.setInactiveState();
+        });
         if (word.length == this.numLetters) {
             // center i
             let centerI = Math.floor(this.numLetters / 2);
@@ -143,7 +150,7 @@ class Board {
         let neighbours = this.getNeighbours(tile);
         for (const n of neighbours) {
             let nTile = this.getTile(n.i, n.j);
-            if (nTile === this.selectedTiles.at(-1)) {
+            if (nTile === this.selectedTiles[this.selectedTiles.length - 1]) {
                 return true;
             }
         }
@@ -161,6 +168,14 @@ class Board {
         this.selectedTiles.pop();
     }
 
+    animate() {
+        this.tiles.forEach(t=>t.setAnimatedState());
+    }
+
+    isFull() {
+        return this.tiles.every(t => !t.isEmpty());
+    }
+
     clicked() {
         // quit if missed
         if (!(mouseX > this.x &
@@ -170,38 +185,54 @@ class Board {
             return;
         }
 
+
         // either we click to edit or to select
         // if none of those is allowed - we reset
         for (const tile of this.tiles) {
             if (tile.isClicked()) {
 
                 console.log(`clicked ${tile.i}, ${tile.j}`);
+                this._debugMessage = `clicked ${tile.i}, ${tile.j}\n`;
+
+                // 0. if animated - quit
+                if (tile.isAnimated()) {
+                    break;
+                }
 
                 // 1. if editing the tile - ignore the click
-                if (tile.isEdited()) {
+                else if (tile.isEdited()) {
                     console.log('Edited tile was clicked - do nothing');
+                    this._debugMessage += 'Edited tile was clicked - do nothing';
                     break;
                 }
 
                 // 2. if some other tile is edited - stop editing and set all inactive
                 else if (this.editedTile != null) {
-                    // this.setAllInactive();
+                    this.setAllInactive();
                     console.log('Clicked on other tile while editing - stop editing');
+                    this._debugMessage += 'Clicked on other tile while editing - stop editing';
                     break;
                 }
 
                 // 3. click to select can be if clicked tile has letter and not yet selected
                 else if (tile.hasLetter() & !tile.isSelected()) {
                     console.log('Clicked on unselected letter');
+                    this._debugMessage += 'Clicked on unselected letter: ';
 
                     // we can select it if 
                     // a. there are no other selected tiles
                     if (this.selectedTiles.length === 0) {
                         this.selectTile(tile);
+
+                        console.log('No other were selected, selecting');
+                        this._debugMessage += 'no other were selected, selecting';
                     }
                     // b. last selected tile is a neighbour of clicked tile - we can also select it
                     else if (this.isNeighbourOfLastSelected(tile)) {
                         this.selectTile(tile);
+
+                        console.log('Its neighbour with last selected, selecting');
+                        this._debugMessage += 'its neighbour with last selected, selecting';
                     }
                 }
 
@@ -215,7 +246,7 @@ class Board {
                     }
 
                     // b. tile is last in selected list - we can unselect it
-                    else if (this.selectedTiles.at(-1) === tile) {
+                    else if (this.selectedTiles[this.selectedTiles.length - 1] === tile) {
                         this.unselectTile(tile);
                     }
                 }

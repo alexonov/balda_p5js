@@ -30,7 +30,7 @@ function setup() {
   let inputer = createInput();
   inputer.attribute('id', 'inputer');
   // inputer.parent('game');
-  // inputer.size(scene.board.tileWidth);
+  inputer.size(scene.board.tileWidth);
   // inputer.style('font-size', `${scene.board.tileWidth*0.8}px`,
   //   'color', '#00264c',
   //   'text-align', 'right',
@@ -148,7 +148,8 @@ function mouseReleased() {
 }
 
 // function touchStarted(){
-//   return false;
+  // mouseClicked();
+  // return false;
 // }
 
 // function touchMoved(){
