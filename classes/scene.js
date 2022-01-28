@@ -37,22 +37,23 @@ class Scene {
         this.words = [];
 
         this.score = startingWord.length - startingWord.length ** 2;
+        this.startingScore = this.score;
 
         this.headerButtons = [{
                 name: 'restart',
-                button: new HeaderButton(x + headerHeight * 0.2, 0, headerHeight, '⎙', buttonColor, buttonColor),
+                button: new HeaderButton(x + headerHeight * 0.2, 0, headerHeight * 0.8, '⎙', buttonColor, buttonColor),
             },
             {
                 name: 'paste',
-                button: new HeaderButton(x + headerHeight * 1.2, 0, headerHeight, '⎀', buttonColor, buttonColor),
+                button: new HeaderButton(x + headerHeight * 1.2, 0, headerHeight * 0.8, '⎀', buttonColor, buttonColor),
             },
             {
                 name: 'copy',
-                button: new HeaderButton(x + this.board.width - headerHeight, 0, headerHeight, '⎘', buttonColor, buttonColor),
+                button: new HeaderButton(x + this.board.width - headerHeight, 0, headerHeight * 0.8, '⎘', buttonColor, buttonColor),
             },
             {
                 name: 'score',
-                button: new HeaderButton(x + this.board.width / 2, headerHeight * 0.8 / 2, headerHeight * 0.5, this.score, buttonColor, 'white', RIGHT),
+                button: new HeaderButton(x + headerHeight * 2.2, headerHeight * 0.8 / 2, headerHeight * 0.5, this.score, buttonColor, 'white'),
             },
 
 
@@ -70,19 +71,31 @@ class Scene {
             case 'score':
                 this.isScoreVisible = true;
                 break;
+            case 'copy':
+                this.copyState();
+                break;
+            case 'paste':
+                this.pasteState();
+                break;
 
             default:
                 break;
         }
     }
 
+    reset() {
+        this.words = [];
+        this.score = this.startingScore;
+    }
+
     restart() {
         console.log('restarting...')
+        this.reset();
+
         let newWord = '';
         do {
             newWord = this.vocab[Math.floor(Math.random() * this.vocab.length)];
         } while (newWord.length != this.board.numLetters);
-
         this.board.setStartingWord(newWord);
     }
 
@@ -92,7 +105,7 @@ class Scene {
 
         rectMode(CORNER);
         stroke(scoreColor);
-        fill(255,255,255, 150);
+        fill(255, 255, 255, 150);
         rect(this.board.tiles[0].x, this.board.tiles[0].y, cardWidth, this.board.width);
 
         fill(scoreColor);
@@ -248,5 +261,61 @@ class Scene {
 
     readInputer() {
         this.board.editedTile.letter = this.inputer.value();
+    }
+
+    asString() {
+        let encoded = this.board.asString();
+
+        // add already composed words
+        for (const word of this.words) {
+            encoded += '.' + word;
+        }
+
+        return encoded;
+    }
+
+    copyState() {
+        let encodedState = encodeString(this.asString());
+        let zippedState = zip(encodedState);
+
+        console.log(encodedState);
+        console.log(zippedState);
+
+        // Create a dummy input to copy the string array inside it
+        var dummy = document.createElement("input");
+
+        // Add it to the document
+        document.body.appendChild(dummy);
+
+        // Set its ID
+        dummy.setAttribute("id", "dummy_id");
+
+        // Output the array into it
+        document.getElementById("dummy_id").value = zippedState;
+
+        // Select it
+        dummy.select();
+
+        // Copy its contents
+        document.execCommand("copy");
+
+        // Remove it as its not needed anymore
+        document.body.removeChild(dummy);
+    }
+
+    pasteState() {
+        let zippedState = prompt("Вставьте строку из буффера мол");
+        console.log(zippedState);
+
+        let unzippedState = unzip(zippedState);
+        let decodedState = decodeString(unzippedState).split('.');
+        
+        this.board.restoreState(decodedState[0]);
+
+        this.reset();
+        for (const word of decodedState.slice(1)) {
+            this.words.push(word);
+            this.score += word.length - 2;
+        }
     }
 }

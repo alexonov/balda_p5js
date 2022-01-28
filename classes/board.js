@@ -4,6 +4,8 @@ var boardState = {
     EDITED: 2
 }
 
+const emptyCode = '_';
+
 class Board {
     constructor(x, y, width, numLetters) {
         this.x = x;
@@ -169,7 +171,7 @@ class Board {
     }
 
     animate() {
-        this.tiles.forEach(t=>t.setAnimatedState());
+        this.tiles.forEach(t => t.setAnimatedState());
     }
 
     isFull() {
@@ -266,5 +268,34 @@ class Board {
                 break;
             }
         }
+
+    }
+
+    asString() {
+        // encode board as string
+        let encoded = '';
+        for (const tile of this.tiles) {
+            if (tile.hasSavedLetter()) {
+                encoded += tile.getLetter();
+            } else {
+                encoded += emptyCode;
+            }
+        }
+        return encoded;
+    }
+
+    restoreState(state) {
+        console.log(state);
+        for(var i = 0; i < state.length; i++) {
+
+            if (state[i] === emptyCode) {
+                this.tiles[i].setLetter('');
+                this.tiles[i].markEditable(true);
+            } else {
+                this.tiles[i].setLetter(state[i]);
+                this.tiles[i].markEditable(false);
+            }
+        }
+        this.setAllInactive();
     }
 }
