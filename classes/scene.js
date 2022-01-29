@@ -280,7 +280,9 @@ class Scene {
         let encodedState = encodeString(this.asString());
         let zippedState = zip(encodedState);
 
-        if (navigator.share) {
+        // switching off while i'm fixing it in telegram
+        if (false) {
+        // if (navigator.share) {
             navigator.share({
                     title: 'Balda share',
                     text: zippedState,
