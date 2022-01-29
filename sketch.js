@@ -5,6 +5,9 @@ var scene;
 
 var vocab;
 
+var startTouchX = 0;
+var startTouchY = 0;
+
 const boardColor = 'white';
 
 function preload() {
@@ -136,26 +139,28 @@ function draw() {
 //   }
 // }
 
-let down;
-let timeTaken
-
 function mousePressed() {
-  down = Date.now();
+
 }
 
 function mouseReleased() {
   timeTaken = Date.now() - down;
 }
 
-// function touchStarted(){
-  // mouseClicked();
-  // return false;
-// }
+function touchStarted(){
+  startTouchX = mouseX;
+  startTouchY = mouseY;
+  return false;
+}
 
 // function touchMoved(){
 //   return false;
 // }
 
-// function touchEnded(){
-//   return false;
-// }
+function touchEnded(){
+  if (startTouchX === mouseX & startTouchY === mouseY) {
+    mouseClicked();
+  }
+
+  return false;
+}
