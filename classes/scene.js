@@ -284,7 +284,7 @@ class Scene {
             navigator.share({
                     title: 'Balda share',
                     text: zippedState,
-                    url: 'https://alexonov.github.io/balda/',
+                    url: '',
                 })
                 .then(() => console.log('Successful share'))
                 .catch((error) => console.log('Error sharing', error));
