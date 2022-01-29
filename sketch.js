@@ -1,5 +1,4 @@
-// var input;
-// var button;
+const numLetters = 5;
 
 var scene;
 
@@ -9,6 +8,17 @@ var startTouchX = 0;
 var startTouchY = 0;
 
 const boardColor = 'white';
+
+function seedRandGenerator(a) {
+  console.log('here');
+
+  return function() {
+    var t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
 
 function preload() {
   vocab = loadStrings('https://alexonov.github.io/balda/assets/vocab.txt');
@@ -23,22 +33,27 @@ function setup() {
   let canvas;
   canvas = createCanvas(windowWidth, windowHeight);
 
-  // canvas.parent("game");
-
   background(boardColor);
 
-  scene = new Scene(width, 'балда', vocab);
+  // chose starting word
+  let date = new Date();
+  let seed = [date.getYear(), date.getMonth(), date.getDate()].join('');
+  let rand = seedRandGenerator(parseInt(seed));
+  let newWord = '';
+  do {
+    newWord = vocab[Math.floor(rand() * vocab.length)];
+    console.log(newWord);
+    console.log(newWord.length != numLetters);
+  } while (newWord.length != numLetters);
+
+  scene = new Scene(width, newWord, vocab);
 
   // create inputer
   let inputer = createInput();
   inputer.attribute('id', 'inputer');
-  // inputer.parent('game');
+
   inputer.size(scene.board.tileWidth);
-  // inputer.style('font-size', `${scene.board.tileWidth*0.8}px`,
-  //   'color', '#00264c',
-  //   'text-align', 'right',
-  // );
-  // inputer.position(0, 0);
+
   inputer.hide();
 
 
@@ -48,28 +63,6 @@ function setup() {
   inputer.mouseClicked(onInputerClicked);
 
   scene.setInputer(inputer);
-
-  // input = createInput();
-  // input.position(0,0);
-  // button = createButton('check');
-  // button.position(0,20);
-  // button.mousePressed(btnCheck);
-
-  // inputLetter = createInput();
-  // inputLetter.position(0, 0);
-  // inputLetter.size(20);
-  // inputLetter.parent("game");
-  // inputLetter.attribute('readOnly', 'true');
-
-  // inputLetter.input(onInputLetter)
-  // inputLetter.mousePressed(onInputLetterPressed);
-  // inputLetter.changed(onInputLetterChanged);
-
-
-  // btnVvod = createButton('Ввод');
-  // btnVvod.position(inputLetter.x + inputLetter.width, 0);
-  // btnVvod.mousePressed(onPressedVvod);
-  // btnVvod.parent("game");
 
 }
 
@@ -111,33 +104,10 @@ function btnCheck() {
   console.log(scene.checkWord(input.value()));
 }
 
-
-// function onPressedVvod() {
-//   if (isHidden) {
-//     inputLetter.show();
-//   } else {
-//     inputLetter.hide();
-//   }
-//   isHidden = !isHidden;
-// }
-
-
 function draw() {
   background(boardColor);
   scene.render()
 }
-
-// function onInputLetterPressed() {
-//   console.log(clickCounter)
-//   console.log(inputLetter.attribute('readOnly'))
-//   if (inputLetter.attribute('readOnly')) {
-//     if (clickCounter == 0) {
-//       clickCounter += 1;
-//     } else {
-//       inputLetter.removeAttribute('readOnly');
-//     }
-//   }
-// }
 
 function mousePressed() {
 
@@ -147,7 +117,7 @@ function mouseReleased() {
   timeTaken = Date.now() - down;
 }
 
-function touchStarted(){
+function touchStarted() {
   startTouchX = mouseX;
   startTouchY = mouseY;
   return false;
@@ -157,7 +127,7 @@ function touchStarted(){
 //   return false;
 // }
 
-function touchEnded(){
+function touchEnded() {
   if (startTouchX === mouseX & startTouchY === mouseY) {
     mouseClicked();
   }

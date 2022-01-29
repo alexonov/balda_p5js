@@ -42,16 +42,16 @@ class Scene {
         this.startingScore = this.score;
 
         this.headerButtons = [{
-                name: 'restart',
+                name: 'paste',
                 button: new HeaderButton(x + headerHeight * 0.2, 0, headerHeight * 0.8, '⎙', buttonColor, buttonColor),
             },
-            {
-                name: 'paste',
-                button: new HeaderButton(x + headerHeight * 1.2, 0, headerHeight * 0.8, '⎀', buttonColor, buttonColor),
-            },
+            // {
+            //     name: 'paste',
+            //     button: new HeaderButton(x + headerHeight * 1.2, 0, headerHeight * 0.8, '⎀', buttonColor, buttonColor),
+            // },
             {
                 name: 'copy',
-                button: new HeaderButton(x + this.board.width - headerHeight, 0, headerHeight * 0.8, '⎘', buttonColor, buttonColor),
+                button: new HeaderButton(x + this.board.width - headerHeight * 0.8, 0, headerHeight * 0.8, '⎘', buttonColor, buttonColor),
             },
             {
                 name: 'score',
@@ -284,7 +284,7 @@ class Scene {
             navigator.share({
                     title: 'Balda share',
                     text: zippedState,
-                    url: '',
+                    url: 'https://alexonov.github.io/balda/',
                 })
                 .then(() => console.log('Successful share'))
                 .catch((error) => console.log('Error sharing', error));
@@ -324,6 +324,10 @@ class Scene {
     pasteState() {
         let zippedState = prompt("Вставьте строку из буффера мол");
         console.log(zippedState);
+
+        if (zippedState === null) {
+            return;
+        }
 
         let unzippedState = unzip(zippedState);
         let decodedState = decodeString(unzippedState).split('.');
