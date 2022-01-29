@@ -55,7 +55,7 @@ class Scene {
             },
             {
                 name: 'score',
-                button: new HeaderButton(x + headerHeight * 2.2, headerHeight * 0.8 / 2, headerHeight * 0.5, this.score, buttonColor, 'white'),
+                button: new HeaderButton(x + headerHeight * 1.2, headerHeight * 0.8 / 2, headerHeight * 0.5, this.score, buttonColor, 'white'),
             },
 
 
