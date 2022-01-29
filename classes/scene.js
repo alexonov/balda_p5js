@@ -19,6 +19,8 @@ var wordState = {
 let buttonColor = '#b5c3d1';
 let scoreColor = '#5d86a0';
 
+let notificationTimeout = 5;
+
 class Scene {
     constructor(width, startingWord, vocab) {
         // calculate center point and board width
@@ -278,29 +280,45 @@ class Scene {
         let encodedState = encodeString(this.asString());
         let zippedState = zip(encodedState);
 
+        if (navigator.share) {
+            navigator.share({
+                    title: 'Balda share',
+                    text: zippedState,
+                    url: '',
+                })
+                .then(() => console.log('Successful share'))
+                .catch((error) => console.log('Error sharing', error));
+        } else {
+            // copy to clipboard
+            // Create a dummy input to copy the string array inside it
+            var dummy = document.createElement("input");
+
+            // Add it to the document
+            document.body.appendChild(dummy);
+
+            // Set its ID
+            dummy.setAttribute("id", "dummy_id");
+
+            // Output the array into it
+            document.getElementById("dummy_id").value = zippedState;
+
+            // Select it
+            dummy.select();
+
+            // Copy its contents
+            document.execCommand("copy");
+
+            // Remove it as its not needed anymore
+            document.body.removeChild(dummy);
+
+            // TODO: add message
+
+            console.log('Share not supported on this browser, copied to clipboard.');
+        }
+
         console.log(encodedState);
         console.log(zippedState);
 
-        // Create a dummy input to copy the string array inside it
-        var dummy = document.createElement("input");
-
-        // Add it to the document
-        document.body.appendChild(dummy);
-
-        // Set its ID
-        dummy.setAttribute("id", "dummy_id");
-
-        // Output the array into it
-        document.getElementById("dummy_id").value = zippedState;
-
-        // Select it
-        dummy.select();
-
-        // Copy its contents
-        document.execCommand("copy");
-
-        // Remove it as its not needed anymore
-        document.body.removeChild(dummy);
     }
 
     pasteState() {
@@ -309,7 +327,7 @@ class Scene {
 
         let unzippedState = unzip(zippedState);
         let decodedState = decodeString(unzippedState).split('.');
-        
+
         this.board.restoreState(decodedState[0]);
 
         this.reset();
